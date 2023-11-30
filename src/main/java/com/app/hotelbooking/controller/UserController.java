@@ -68,7 +68,6 @@ public class UserController {
         emailSenderService.sendEmail(newUser.getEmail(), subject, body);
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
-
     }
 
     @PatchMapping("/verifyEmail/{email}")

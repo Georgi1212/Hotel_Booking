@@ -1,6 +1,7 @@
 package com.app.hotelbooking.mapper;
 
 import com.app.hotelbooking.dto.UserDto;
+import com.app.hotelbooking.enums.UserType;
 import com.app.hotelbooking.model.User;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,6 +21,7 @@ public class UserMapper {
                 .phoneNumber(user.getPhoneNumber())
                 .dateOfBirth(user.getDateOfBirth())
                 .address(user.getAddress())
+                .userType(user.getUserType().toString())
                 .build();
     }
 
@@ -33,6 +35,7 @@ public class UserMapper {
                 .phoneNumber(userDto.getPhoneNumber())
                 .dateOfBirth(userDto.getDateOfBirth())
                 .address(userDto.getAddress())
+                .userType(Enum.valueOf(UserType.class, userDto.getUserType()))
                 .build();
     }
 }

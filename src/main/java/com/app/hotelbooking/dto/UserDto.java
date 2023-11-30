@@ -35,4 +35,6 @@ public class UserDto {
     private LocalDate dateOfBirth;
     @Size(max = 64)
     private String address;
+
+    private String userType; // USER or ADMIN
 }
