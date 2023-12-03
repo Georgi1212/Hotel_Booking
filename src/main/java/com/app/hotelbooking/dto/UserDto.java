@@ -2,6 +2,7 @@ package com.app.hotelbooking.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,6 +36,6 @@ public class UserDto {
     private LocalDate dateOfBirth;
     @Size(max = 64)
     private String address;
-
+    @Pattern(regexp = "^(USER|ADMIN)$", message = "Role must be either 'USER' or 'ADMIN'")
     private String userType; // USER or ADMIN
 }

@@ -3,8 +3,8 @@ package com.app.hotelbooking.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.type.descriptor.jdbc.VarbinaryJdbcType;
 
 import java.math.BigDecimal;
 import java.util.Set;
@@ -39,9 +39,17 @@ public class Hotel {
     @Column(name = "country", nullable = false)
     private String country;
 
+    @Column(name = "hotel_description")
+    private String description;
+
+    //@Lob
+    //@Convert(converter= VarbinaryJdbcType.class)
+    @Column(name = "hotel_image")
+    private byte[] hotelImageUrl;
+
     @Column(name = "rate", nullable = false)
     @Min(value = 1, message = "Value must be at least 1")
-    @Max(value = 5, message = "Value must be at most 5")
+    @Max(value = 10, message = "Value must be at most 5")
     private BigDecimal rate;
 
     @Column(name = "is_pet_available")

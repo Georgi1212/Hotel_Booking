@@ -8,8 +8,8 @@ values ('Petar', 'petar@test.com', '123', 'Petar', 'Nikolov', '0877578974', null
 -- here you have to check if the host_id is an admin (user can book and see the other hotels,
 -- but the admin can add, update and delete its own place, which he will share in the platform
 -- and see when the user has booked a room - observer pattern! and maybe see in his calendar the already booked rooms for a definite period)
-insert into hotel (host_id, hotel_name, street, city, country, rate, is_pet_available)
-values (2, 'Ritz', 'ul. bla bla', 'Paris', 'France', '5', null); --can be added also coordinates of the place
+insert into hotel (host_id, hotel_name, street, city, country, hotel_description, hotel_image, rate, is_pet_available)
+values (2, 'Ritz', 'ul. bla bla', 'Paris', 'France', null, null, 5.2, null); --can be added also coordinates of the place
 
 --------------------
 --here there are the room types

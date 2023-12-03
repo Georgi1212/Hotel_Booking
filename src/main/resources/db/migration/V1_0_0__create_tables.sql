@@ -23,6 +23,8 @@ CREATE TABLE hotel
     street              VARCHAR(64) UNIQUE    NOT NULL,
     city                VARCHAR(64)           NOT NULL,
     country             VARCHAR(100)          NOT NULL,
+    hotel_description   VARCHAR(2000),
+    hotel_image         BYTEA,
     rate                DECIMAL               NOT NULL, --constraint (from 1 to 5, ex. 3.5)
     is_pet_available    BOOLEAN,
     FOREIGN KEY (host_id) REFERENCES users (id) ON DELETE CASCADE
@@ -51,7 +53,7 @@ CREATE TABLE room_image
 (
     id                 BIGSERIAL PRIMARY KEY NOT NULL,
     room_id            BIGINT                NOT NULL,
-    image_url          VARCHAR(255),
+    image_url          BYTEA,
     FOREIGN KEY (room_id) REFERENCES room (id) ON DELETE CASCADE
 );
 

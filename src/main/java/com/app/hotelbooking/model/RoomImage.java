@@ -2,6 +2,8 @@ package com.app.hotelbooking.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Type;
+import org.hibernate.type.descriptor.jdbc.VarbinaryJdbcType;
 
 @Entity
 @Table(name = "room_image")
@@ -21,6 +23,8 @@ public class RoomImage {
     @JoinColumn(name = "room_id", nullable = false)
     private Room room;
 
+    //@Lob
+    //@Convert(converter= VarbinaryJdbcType.class)
     @Column(name = "image_url")
-    private String imageUrl;
+    private byte[] imageUrl;
 }

@@ -5,7 +5,7 @@ ALTER TABLE users
 ADD CONSTRAINT check_unique_email UNIQUE (email);
 
 ALTER TABLE hotel
-ADD CONSTRAINT check_hotel_rate CHECK (rate >= 1 AND rate <= 5);
+ADD CONSTRAINT check_hotel_rate CHECK (rate >= 1 AND rate <= 10);
 
 ALTER TABLE hotel
 ADD CONSTRAINT check_hotel_street UNIQUE (street);
