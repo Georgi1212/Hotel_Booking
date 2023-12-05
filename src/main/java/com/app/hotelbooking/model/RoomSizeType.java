@@ -32,7 +32,7 @@ public class RoomSizeType {
     @Max(value = 4, message = "Value must be at most 4")
     private int roomCapacity;
 
-    @OneToOne(mappedBy = "roomSizeType", cascade = CascadeType.REMOVE)
-    private Room rooms;
+    @OneToMany(mappedBy = "roomSizeType", cascade = CascadeType.REMOVE)
+    private Set<Room> rooms;
 
 }

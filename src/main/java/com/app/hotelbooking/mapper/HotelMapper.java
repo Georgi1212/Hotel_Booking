@@ -5,6 +5,7 @@ import com.app.hotelbooking.model.Hotel;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +22,7 @@ public class HotelMapper {
                 .country(hotel.getCountry())
                 .hotelDescription(hotel.getDescription())
                 .hotelImageUrl(hotel.getHotelImageUrl())
-                .isPetAvailable(hotel.isPetAvailable())
+                .rate(hotel.getRate().toString())
                 .build();
     }
 
@@ -33,7 +34,7 @@ public class HotelMapper {
                 .country(hotelDto.getCountry())
                 .description(hotelDto.getHotelDescription())
                 .hotelImageUrl(hotelDto.getHotelImageUrl())
-                .isPetAvailable(hotelDto.isPetAvailable())
+                .rate(new BigDecimal(hotelDto.getRate()))
                 .build();
     }
 

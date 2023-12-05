@@ -26,7 +26,6 @@ CREATE TABLE hotel
     hotel_description   VARCHAR(2000),
     hotel_image         BYTEA,
     rate                DECIMAL               NOT NULL, --constraint (from 1 to 5, ex. 3.5)
-    is_pet_available    BOOLEAN,
     FOREIGN KEY (host_id) REFERENCES users (id) ON DELETE CASCADE
 );
 CREATE TABLE room_size_type
@@ -71,10 +70,12 @@ CREATE TABLE occupancy
 CREATE TABLE booking
 (
     id                 BIGSERIAL PRIMARY KEY NOT NULL,
-    room_id            BIGINT                NOT NULL,
+  --room_id            BIGINT                NOT NULL,
+    occupancy_id       BIGINT                NOT NULL,
     user_id            BIGINT                NOT NULL,
     sum_price          DECIMAL               NOT NULL, --CALCULATE DATES FROM OCCUPANCY TABLE
     created_at       TIMESTAMP             NOT NULL DEFAULT CURRENT_DATE,
-    FOREIGN KEY (room_id) REFERENCES room (id) ON DELETE CASCADE,
+  --FOREIGN KEY (room_id) REFERENCES room (id) ON DELETE CASCADE,
+    FOREIGN KEY (occupancy_id) REFERENCES occupancy (id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );

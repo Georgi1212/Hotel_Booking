@@ -21,9 +21,13 @@ public class Booking {
     @Column(insertable = false, updatable = false, name = "id")
     private Long id;
 
-    @ManyToOne
+    /*@ManyToOne
     @JoinColumn(name = "room_id", nullable = false)
-    private Room room;
+    private Room room;*/
+
+    @OneToOne
+    @JoinColumn(name = "occupancy_id", nullable = false)
+    private Occupancy occupancy;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

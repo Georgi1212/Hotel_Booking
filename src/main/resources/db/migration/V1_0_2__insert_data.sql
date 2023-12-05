@@ -8,8 +8,8 @@ values ('Petar', 'petar@test.com', '123', 'Petar', 'Nikolov', '0877578974', null
 -- here you have to check if the host_id is an admin (user can book and see the other hotels,
 -- but the admin can add, update and delete its own place, which he will share in the platform
 -- and see when the user has booked a room - observer pattern! and maybe see in his calendar the already booked rooms for a definite period)
-insert into hotel (host_id, hotel_name, street, city, country, hotel_description, hotel_image, rate, is_pet_available)
-values (2, 'Ritz', 'ul. bla bla', 'Paris', 'France', null, null, 5.2, null); --can be added also coordinates of the place
+insert into hotel (host_id, hotel_name, street, city, country, hotel_description, hotel_image, rate)
+values (2, 'Ritz', 'ul. bla bla', 'Paris', 'France', null, null, 5.2); --can be added also coordinates of the place
 
 --------------------
 --here there are the room types
@@ -37,4 +37,5 @@ insert into occupancy (room_id, check_in, check_out, created_at, deleted_at) val
 -- I have to get the check_in and check_out table, then I have to calculate the nights and after that to caluclate the (room price * nights));
 -- maybe with using automatically calculating function ??
 -- check id on the room's table - occupancy_id id not null, because when I book a room, the gets occupied (reserved)
-insert into booking (room_id, user_id, sum_price) values (1, 1, 100.0);
+insert into booking (occupancy_id, user_id, sum_price) values (1, 1, 100.0);
+--room_id

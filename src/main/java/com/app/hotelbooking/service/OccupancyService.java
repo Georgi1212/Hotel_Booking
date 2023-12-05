@@ -14,7 +14,9 @@ import java.util.List;
 public class OccupancyService {
     private final OccupancyRepository occupancyRepository;
 
-    //TODO: when I book a room, immediately I have to add a record in the occupancy table
+    public List<Occupancy> findOccupanciesByRoom(final Room room){
+        return occupancyRepository.findOccupanciesByRoom(room);
+    }
     public boolean isRoomOccupied(final Room room, final LocalDate checkIn, final LocalDate checkOut){
         List<Occupancy> occupancyListForSpecificRoom = occupancyRepository.findOccupanciesByRoom(room);
 
@@ -29,10 +31,10 @@ public class OccupancyService {
                     ((checkIn.isAfter(occupancyCheckIn) && (checkIn.isAfter(occupancyCheckOut) || checkIn.isEqual(occupancyCheckOut))) &&
                             (checkOut.isAfter(occupancyCheckIn) && checkOut.isAfter(occupancyCheckOut)))) ) {
 
-                return true;
+                return false;
             }
         }
 
-        return false;
+        return true;
     }
 }

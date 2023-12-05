@@ -44,4 +44,7 @@ public class Occupancy {
     @UpdateTimestamp
     private Timestamp deletedAt;
 
+    @OneToOne(mappedBy = "occupancy", cascade = CascadeType.REMOVE)
+    private Booking booking;
+
 }

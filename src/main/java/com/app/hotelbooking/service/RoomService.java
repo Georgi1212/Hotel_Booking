@@ -2,23 +2,20 @@ package com.app.hotelbooking.service;
 
 import com.app.hotelbooking.dto.RoomDto;
 import com.app.hotelbooking.enums.RoomType;
-import com.app.hotelbooking.enums.UserType;
 import com.app.hotelbooking.mapper.HotelMapper;
 import com.app.hotelbooking.mapper.RoomMapper;
 import com.app.hotelbooking.model.Hotel;
 import com.app.hotelbooking.model.Room;
-import com.app.hotelbooking.model.RoomImage;
+import com.app.hotelbooking.model.RoomSizeType;
 import com.app.hotelbooking.repository.HotelRepository;
 import com.app.hotelbooking.repository.RoomImageRepository;
 import com.app.hotelbooking.repository.RoomRepository;
+import com.app.hotelbooking.repository.RoomSizeTypeRepository;
+import com.app.hotelbooking.validation.ObjectFoundException;
 import com.app.hotelbooking.validation.ObjectNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
@@ -30,15 +27,23 @@ public class RoomService {
     private final RoomMapper roomMapper;
 
     private final RoomImageRepository roomImageRepository;
+    private final RoomSizeTypeRepository roomSizeTypeRepository;
 
     private final HotelRepository hotelRepository;
     private final HotelMapper hotelMapper;
 
+    private RoomSizeType findRoomSizeTypeByRoomTypeAndRoomCapacity(RoomType roomType, int roomCapacity){
+        return roomSizeTypeRepository.findFirstByRoomTypeAndRoomCapacity(roomType, roomCapacity)
+                .orElseThrow(() -> new ObjectFoundException("There is no such room type"));
+    }
+    public RoomDto toRoomDto(Room room){
+        return roomMapper.toDto(room);
+    }
     public Room getRoomByRoomId(final Long roomId){
         return roomRepository.findFirstById(roomId)
                 .orElseThrow(() -> new ObjectNotFoundException("There is no such room"));
     }
-    public RoomDto getRoomByHotelAndRoomId(final Long hotelId, final Long roomId){
+    public Room getRoomByHotelAndRoomId(final Long hotelId, final Long roomId){
         final Hotel hotel = hotelRepository.findFirstById(hotelId)
                 .orElseThrow(() -> new ObjectNotFoundException("There is no such hotel"));
 
@@ -49,65 +54,73 @@ public class RoomService {
             throw new ObjectNotFoundException("There is no such room for this hotel");
         }
 
-        return roomMapper.toDto(room);
+        return room;
     }
 
-    public List<RoomImage> getAllImagesByRoomId(final Long roomId){
-        final Room room = getRoomByRoomId(roomId);
+    public List<RoomDto> getAllRoomDtoByHotelId(final Long hotelId){
+        Hotel hotel = hotelRepository.findFirstById(hotelId)
+                .orElseThrow(() -> new ObjectNotFoundException("There is no such hotel"));
 
-        return roomImageRepository.findRoomImagesByRoom(room);
+        return roomMapper.toDtoCollection(roomRepository.findRoomsByHotel(hotel));
     }
 
-    public void addImageToRoom(final Long roomId, final MultipartFile roomImage) throws IOException {
-        final Room room = getRoomByRoomId(roomId);
+    public List<Room> getAllRoomEntitiesByHotelId(final Long hotelId){
+        Hotel hotel = hotelRepository.findFirstById(hotelId)
+                .orElseThrow(() -> new ObjectNotFoundException("There is no such hotel"));
 
-        final RoomImage image = new RoomImage();
-        image.setImageUrl(roomImage.getBytes());
-
-        image.setRoom(room);
-        room.getRoomImages().add(image);
-
-        roomImageRepository.save(image);
+        return roomRepository.findRoomsByHotel(hotel);
     }
 
-    public void deleteImageToRoom(final Long roomId, final Long roomImageId){
-        final Room room = getRoomByRoomId(roomId);
-
-        final RoomImage roomImageToDelete = roomImageRepository.findFirstById(roomImageId)
-                .orElseThrow(() -> new ObjectNotFoundException("There is no such image"));
-
-        boolean isImageFromRoom = roomImageToDelete.getRoom().equals(room);
-
-        if(!isImageFromRoom){
-            throw new ObjectNotFoundException("This image not belongs to that specific room");
-        }
-
-        room.getRoomImages().remove(roomImageToDelete);
-        roomImageRepository.delete(roomImageToDelete);
-    }
-
-    public RoomDto updateRoom(final Long roomId, final RoomDto roomDto){
+    public void addRoom(final Long hotelId, final RoomDto roomDto){
 
         if(roomDto.getNumChildren() + roomDto.getNumAdults() != roomDto.getRoomSizeTypeDto().getRoomCapacity()){
             throw new IllegalArgumentException("The sum of number of children + number of adults cannot be less or greater than the room capacity");
         }
 
-        final Room room = getRoomByRoomId(roomId);
+        final Hotel hotel = hotelRepository.findFirstById(hotelId)
+                .orElseThrow(() -> new ObjectNotFoundException("There is no such hotel"));
+
+        //roomSizeTypeMapper.toEntity(roomDto.getRoomSizeTypeDto());
+        final RoomSizeType roomSizeType = findRoomSizeTypeByRoomTypeAndRoomCapacity(Enum.valueOf(RoomType.class, roomDto.getRoomSizeTypeDto().getRoomType()),
+                roomDto.getRoomSizeTypeDto().getRoomCapacity());
+
+        final Room newRoom = roomMapper.toEntity(roomDto);
+
+        newRoom.setHotel(hotel);
+        newRoom.setRoomSizeType(roomSizeType);
+
+        hotel.getRooms().add(newRoom);
+        roomSizeType.getRooms().add(newRoom);
+
+        roomRepository.save(newRoom);
+    }
+
+    public RoomDto updateRoom(final Long hotelId, final Long roomId, final RoomDto roomDto){
+
+        if(roomDto.getNumChildren() + roomDto.getNumAdults() != roomDto.getRoomSizeTypeDto().getRoomCapacity()){
+            throw new IllegalArgumentException("The sum of number of children + number of adults cannot be less or greater than the room capacity");
+        }
+
+        final RoomSizeType newRoomSizeType = findRoomSizeTypeByRoomTypeAndRoomCapacity(Enum.valueOf(RoomType.class, roomDto.getRoomSizeTypeDto().getRoomType()),
+                roomDto.getRoomSizeTypeDto().getRoomCapacity());
+
+        final Room room = getRoomByHotelAndRoomId(hotelId, roomId);
+
+        final RoomSizeType oldRoomSizeType = room.getRoomSizeType();
+        oldRoomSizeType.getRooms().remove(room);
 
         if(nonNull(roomDto.getRoomPrice())) room.setRoomPrice(roomDto.getRoomPrice());
-        if(nonNull(roomDto.getDescription())) room.setDescription(room.getDescription());
+        if(nonNull(roomDto.getDescription())) room.setDescription(roomDto.getDescription());
 
         room.setNumAdults(roomDto.getNumAdults());
         room.setNumChildren(roomDto.getNumChildren());
 
-        if(nonNull(roomDto.getRoomSizeTypeDto().getRoomType()))
-            room.getRoomSizeType().setRoomType(Enum.valueOf(RoomType.class, roomDto.getRoomSizeTypeDto().getRoomType()));
+        room.setRoomSizeType(newRoomSizeType);
+        newRoomSizeType.getRooms().add(room);
 
-        room.getRoomSizeType().setRoomCapacity(roomDto.getRoomSizeTypeDto().getRoomCapacity());
+        roomRepository.save(room);
 
         return roomMapper.toDto(room);
     }
-
-
 
 }

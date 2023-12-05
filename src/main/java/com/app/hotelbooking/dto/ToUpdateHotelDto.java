@@ -1,21 +1,16 @@
 package com.app.hotelbooking.dto;
 
-import jakarta.persistence.Lob;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class HotelDto {
+public class ToUpdateHotelDto {
 
     @Size(max = 255)
     private String hotelName;
@@ -31,9 +26,6 @@ public class HotelDto {
 
     @Size(max = 2000)
     private String hotelDescription;
-
-    //@Lob
-    private byte[] hotelImageUrl;
 
     private String rate;
 }

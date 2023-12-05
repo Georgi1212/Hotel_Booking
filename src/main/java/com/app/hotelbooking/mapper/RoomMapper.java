@@ -31,7 +31,7 @@ public class RoomMapper {
                 .description(roomDto.getDescription())
                 .numChildren(roomDto.getNumChildren())
                 .numAdults(roomDto.getNumAdults())
-                .roomSizeType(roomSizeTypeMapper.toEntity(roomDto.getRoomSizeTypeDto()))
+                //.roomSizeType(roomSizeTypeMapper.toEntity(roomDto.getRoomSizeTypeDto()))
                 .build();
     }
 

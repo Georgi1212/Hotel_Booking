@@ -29,7 +29,7 @@ public class Room {
     @Column(name = "room_price", nullable = false)
     private BigDecimal roomPrice;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "room_type", nullable = false)
     private RoomSizeType roomSizeType;
 
@@ -48,6 +48,6 @@ public class Room {
     @OneToMany(mappedBy = "room", cascade = CascadeType.REMOVE)
     private Set<RoomImage> roomImages;
 
-    @OneToMany(mappedBy = "room", cascade = CascadeType.REMOVE)
-    private Set<Booking> bookings;
+    /*@OneToMany(mappedBy = "room", cascade = CascadeType.REMOVE)
+    private Set<Booking> bookings;*/
 }

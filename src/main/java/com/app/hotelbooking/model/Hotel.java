@@ -52,9 +52,6 @@ public class Hotel {
     @Max(value = 10, message = "Value must be at most 5")
     private BigDecimal rate;
 
-    @Column(name = "is_pet_available")
-    private boolean isPetAvailable;
-
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.REMOVE)
     private Set<Room> rooms;
 
