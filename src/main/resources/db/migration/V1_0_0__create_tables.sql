@@ -52,6 +52,7 @@ CREATE TABLE room_image
 (
     id                 BIGSERIAL PRIMARY KEY NOT NULL,
     room_id            BIGINT                NOT NULL,
+    image_name         VARCHAR(1000)         NOT NULL,
     image_url          BYTEA,
     FOREIGN KEY (room_id) REFERENCES room (id) ON DELETE CASCADE
 );

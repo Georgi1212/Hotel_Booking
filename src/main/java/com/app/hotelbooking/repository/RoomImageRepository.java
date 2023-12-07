@@ -13,5 +13,9 @@ public interface RoomImageRepository extends JpaRepository<RoomImage, Long> {
 
     Optional<RoomImage> findFirstById(final Long id);
     Optional<RoomImage> findFirstByImageUrl(byte[] imageUrl);
+
+    Optional<RoomImage> findFirstByImageName(String imageName);
+
+    Optional<RoomImage> findFirstByImageNameAndRoom(String imageName, Room room);
     List<RoomImage> findAllByRoom(final Room room);
 }

@@ -14,13 +14,13 @@ import java.util.stream.Collectors;
 public class RoomImageMapper {
     public RoomImageDto toDto(RoomImage roomImage) {
         return RoomImageDto.builder()
-                .imageUrl(roomImage.getImageUrl())
+                .imageName(roomImage.getImageName())
                 .build();
     }
 
     public RoomImage toEntity(RoomImageDto roomImageDtoDto){
         return RoomImage.builder()
-                .imageUrl(roomImageDtoDto.getImageUrl())
+                .imageName(roomImageDtoDto.getImageName())
                 .build();
     }
 

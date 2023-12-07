@@ -23,8 +23,9 @@ public class RoomImage {
     @JoinColumn(name = "room_id", nullable = false)
     private Room room;
 
+    private String imageName;
     //@Lob
     //@Convert(converter= VarbinaryJdbcType.class)
-    @Column(name = "image_url")
+    @Column(name = "image_url", length = Integer.MAX_VALUE)
     private byte[] imageUrl;
 }

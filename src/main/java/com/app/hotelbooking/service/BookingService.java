@@ -1,7 +1,7 @@
 package com.app.hotelbooking.service;
 
 import com.app.hotelbooking.dto.BookingDto;
-import com.app.hotelbooking.dto.TimePeriodDto;
+import com.app.hotelbooking.dto.OccupancyDto;
 import com.app.hotelbooking.model.*;
 import com.app.hotelbooking.repository.BookingRepository;
 import com.app.hotelbooking.repository.OccupancyRepository;
@@ -29,8 +29,6 @@ public class BookingService {
     private final OccupancyRepository occupancyRepository;
 
     private final BookingRepository bookingRepository;
-
-//TODO rezervacii za opredelen period za vsichki stai;
 
     private int getDaysBetween(final LocalDate checkIn, final LocalDate checkOut){
         return (int)ChronoUnit.DAYS.between(checkIn, checkOut);
@@ -149,12 +147,77 @@ public class BookingService {
                 .collect(Collectors.toList());
     }
 
-    public void addBooking(final String email, final Long roomId, final LocalDate checkIn, final LocalDate checkOut){
+    public List<OccupancyDto> getOccupanciesByHotelIdAndRoomId(final Long hotelId, final Long roomId){
+        Room room = roomService.getRoomByHotelAndRoomId(hotelId, roomId);
+
+        List<Occupancy> occupancies = occupancyService.findOccupanciesByRoom(room);
+
+        List<OccupancyDto> occupanciesDto = new ArrayList<>();
+
+        for(Occupancy occupancy : occupancies){
+            OccupancyDto occupancyDto = new OccupancyDto();
+
+            occupancyDto.setHotelId(hotelId);
+            occupancyDto.setRoomId(roomId);
+            occupancyDto.setCheck_in(occupancy.getCheck_in());
+            occupancyDto.setCheck_out(occupancy.getCheck_out());
+
+            occupanciesDto.add(occupancyDto);
+        }
+
+        return occupanciesDto;
+    }
+
+    public List<OccupancyDto> getOccupanciesByHotelId(final Long hotelId){
+
+        List<Room> rooms = roomService.getAllRoomEntitiesByHotelId(hotelId);
+
+        List<OccupancyDto> allOccupanciesDto = new ArrayList<>();
+
+        for(Room room : rooms){
+            List<OccupancyDto> roomOccupanciesDto = getOccupanciesByHotelIdAndRoomId(hotelId, room.getId());
+            allOccupanciesDto.addAll(roomOccupanciesDto);
+        }
+
+        return allOccupanciesDto;
+    }
+
+    public List<OccupancyDto> getOccupanciesByHotelIdAndRoomIdForTimePeriod(final Long hotelId, final Long roomId,
+                                                                            final LocalDate startDate, final LocalDate endDate){
+        if(endDate.isBefore(startDate)){
+            throw new IllegalArgumentException("The check out date cannot be before the check in date");
+        }
+
+        List<OccupancyDto> occupanciesDto = getOccupanciesByHotelIdAndRoomId(hotelId, roomId);
+
+        return occupanciesDto.stream()
+                .filter(o -> (isLocalDateBetweenRange(startDate, endDate, o.getCheck_in()) &&
+                        isLocalDateBetweenRange(startDate, endDate, o.getCheck_out())) &&
+                        o.getCheck_in().isBefore(o.getCheck_out()))
+                .collect(Collectors.toList());
+    }
+
+    public List<OccupancyDto> getOccupanciesByHotelIdForTimePeriod(final Long hotelId, final LocalDate startDate, final LocalDate endDate){
+        if(endDate.isBefore(startDate)){
+            throw new IllegalArgumentException("The check out date cannot be before the check in date");
+        }
+
+        List<OccupancyDto> occupanciesDto = getOccupanciesByHotelId(hotelId);
+
+        return occupanciesDto.stream()
+                .filter(o -> (isLocalDateBetweenRange(startDate, endDate, o.getCheck_in()) &&
+                        isLocalDateBetweenRange(startDate, endDate, o.getCheck_out())) &&
+                        o.getCheck_in().isBefore(o.getCheck_out()))
+                .collect(Collectors.toList());
+    }
+
+    public void addBooking(final String email, final Long hotelId, final Long roomId,
+                           final LocalDate checkIn, final LocalDate checkOut){
 
         User user = userService.findUserByEmail(email)
                 .orElseThrow(() -> new ObjectNotFoundException("There is no such user"));
 
-        Room roomToBook = roomService.getRoomByRoomId(roomId);
+        Room roomToBook = roomService.getRoomByHotelAndRoomId(hotelId, roomId);
 
         boolean isRoomOccupied = occupancyService.isRoomOccupied(roomToBook, checkIn, checkOut);
 

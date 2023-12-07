@@ -2,6 +2,7 @@ package com.app.hotelbooking.service;
 
 
 import com.app.hotelbooking.dto.HotelDto;
+import com.app.hotelbooking.imageUtils.ImageUtils;
 import com.app.hotelbooking.mapper.HotelMapper;
 import com.app.hotelbooking.mapper.RoomMapper;
 import com.app.hotelbooking.model.*;
@@ -15,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.zip.DataFormatException;
 
 import static java.util.Objects.nonNull;
 
@@ -61,6 +63,18 @@ public class HotelService {
         return hotelMapper.toDtoCollection(hotelRepository.findHotelsByCountry(country));
     }
 
+    public byte[] getHotelImage(final Long hotelId){
+        Hotel hotel = hotelMapper.toEntity(getHotelById(hotelId));
+
+        byte[] hotelImage = hotel.getHotelImageUrl();
+
+        try {
+            return ImageUtils.decompressImage(hotelImage);
+        } catch (DataFormatException | IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
     public void addHotel(final HotelDto hotelDto, final String email){
         final Hotel newHotel = hotelMapper.toEntity(hotelDto);
 
@@ -84,12 +98,11 @@ public class HotelService {
         hotelRepository.save(newHotel);
 
     }
-
     public void addImageToHotel(final Long hotelId, final MultipartFile hotelImage) throws IOException {
         final Hotel hotel = hotelRepository.findFirstById(hotelId)
                 .orElseThrow(() -> new ObjectNotFoundException("There is no such hotel"));
 
-        hotel.setHotelImageUrl(hotelImage.getBytes());
+        hotel.setHotelImageUrl(ImageUtils.compressImage(hotelImage.getBytes()));
 
         hotelRepository.save(hotel);
     }
@@ -113,12 +126,14 @@ public class HotelService {
         return hotelMapper.toDto(hotel);
     }
 
-    public void updateHotelImage(final Long hotelId, final MultipartFile newImage) throws IOException {
+    public byte[] updateHotelImage(final Long hotelId, final MultipartFile newImage) throws IOException, DataFormatException {
         final Hotel hotel = hotelRepository.findFirstById(hotelId)
                 .orElseThrow(() -> new ObjectNotFoundException("There is no such hotel"));
 
-        hotel.setHotelImageUrl(newImage.getBytes());
+        hotel.setHotelImageUrl(ImageUtils.compressImage(newImage.getBytes()));
         hotelRepository.save(hotel);
+
+        return ImageUtils.decompressImage(hotel.getHotelImageUrl());
     }
 
     public void deleteHotel(Long hotelId){

@@ -31,10 +31,10 @@ public class OccupancyService {
                     ((checkIn.isAfter(occupancyCheckIn) && (checkIn.isAfter(occupancyCheckOut) || checkIn.isEqual(occupancyCheckOut))) &&
                             (checkOut.isAfter(occupancyCheckIn) && checkOut.isAfter(occupancyCheckOut)))) ) {
 
-                return false;
+                return true;
             }
         }
 
-        return true;
+        return false;
     }
 }

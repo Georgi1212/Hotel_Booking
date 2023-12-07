@@ -1,10 +1,7 @@
 package com.app.hotelbooking.controller;
 
 import com.app.hotelbooking.dto.*;
-import com.app.hotelbooking.model.Booking;
-import com.app.hotelbooking.model.Hotel;
 import com.app.hotelbooking.model.Room;
-import com.app.hotelbooking.model.RoomImage;
 import com.app.hotelbooking.service.BookingService;
 import com.app.hotelbooking.service.HotelService;
 import com.app.hotelbooking.service.RoomImageService;
@@ -12,14 +9,20 @@ import com.app.hotelbooking.service.RoomService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.DataFormatException;
+
+import static org.springframework.http.MediaType.*;
 
 @Slf4j
 @RestController
@@ -110,6 +113,57 @@ public class HotelBookingController {
                 HttpStatus.OK);
     }
 
+    @GetMapping("/{hotelId}/rooms/{roomId}/occupancies")
+    public ResponseEntity<List<OccupancyDto>> getOccupanciesByHotelIdAndRoomId(@PathVariable Long hotelId,
+                                                                               @PathVariable Long roomId){
+        return new ResponseEntity<>(bookingService.getOccupanciesByHotelIdAndRoomId(hotelId, roomId), HttpStatus.OK);
+    }
+
+    @GetMapping("/hotel/{hotelId}/occupancies")
+    public ResponseEntity<List<OccupancyDto>> getOccupanciesByHotelId(@PathVariable Long hotelId){
+        return new ResponseEntity<>(bookingService.getOccupanciesByHotelId(hotelId), HttpStatus.OK);
+    }
+
+    @GetMapping("/{hotelId}/rooms/{roomId}/occupancies/timePeriod")
+    public ResponseEntity<List<OccupancyDto>> getOccupanciesByHotelIdAndRoomIdForTimePeriod(@PathVariable Long hotelId,
+                                                                                            @PathVariable Long roomId,
+                                                                                            @RequestParam LocalDate startDate,
+                                                                                            @RequestParam LocalDate endDate){
+        return new ResponseEntity<>(bookingService.
+                getOccupanciesByHotelIdAndRoomIdForTimePeriod(hotelId, roomId, startDate, endDate),
+                HttpStatus.OK);
+    }
+
+    @GetMapping("/hotel/{hotelId}/occupancies/timePeriod")
+    public ResponseEntity<List<OccupancyDto>> getOccupanciesByHotelIdForTimePeriod(@PathVariable Long hotelId,
+                                                                                   @RequestParam LocalDate startDate,
+                                                                                   @RequestParam LocalDate endDate){
+        return new ResponseEntity<>(bookingService.
+                getOccupanciesByHotelIdForTimePeriod(hotelId, startDate, endDate),
+                HttpStatus.OK);
+    }
+
+    @GetMapping(value= "/{hotelId}/rooms/{roomId}/image/{imageName}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public ResponseEntity<byte[]> getImageByRoomAndImageName(@PathVariable final Long hotelId,
+                                                             @PathVariable final Long roomId,
+                                                             @PathVariable final String imageName){
+        byte[] imageData = roomImageService.getImageByRoomAndImageName(hotelId, roomId, imageName);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.valueOf(IMAGE_PNG_VALUE))//APPLICATION_OCTET_STREAM_VALUE))
+                .body(imageData);
+    }
+
+    @GetMapping(value="/{hotelId}/image", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public ResponseEntity<byte[]> getHotelImage(@PathVariable Long hotelId){
+
+        byte[] imageData = hotelService.getHotelImage(hotelId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.valueOf(IMAGE_PNG_VALUE))
+                .body(imageData);
+    }
+
     @PostMapping("/{email}/newHotel")
     public ResponseEntity<Object> addHotel(@PathVariable String email,
                                            @RequestBody HotelDto hotelDto){
@@ -119,7 +173,7 @@ public class HotelBookingController {
         Map<String, String> response = new HashMap<>();
         response.put("message", "Successfully added hotel");
 
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PostMapping("/{hotelId}/newRoom")
@@ -130,6 +184,46 @@ public class HotelBookingController {
 
         Map<String, String> response = new HashMap<>();
         response.put("message", "Successfully added room");
+
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/{email}/newBooking")
+    public ResponseEntity<Object> addBooking(@PathVariable String email,
+                                             @RequestBody ToCreateBookingDto toCreateBookingDto){
+
+        bookingService.addBooking(email, toCreateBookingDto.getHotelId(),
+                toCreateBookingDto.getRoomId(),
+                toCreateBookingDto.getCheck_in(),
+                toCreateBookingDto.getCheck_out());
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Successfully added booking");
+
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/{hotelId}/rooms/{roomId}/newImage")
+    public ResponseEntity<Object> addImage(@PathVariable Long hotelId,
+                                           @PathVariable Long roomId,
+                                           @RequestParam("imageUrl") MultipartFile imageFile) throws IOException {
+
+        roomImageService.addImageToRoom(hotelId, roomId, imageFile);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Successfully added image to room");
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/{hotelId}/newImage")
+    public ResponseEntity<Object> addImageToHotel(@PathVariable Long hotelId,
+                                                  @RequestParam("imageUrl") MultipartFile imageFile) throws IOException {
+
+        hotelService.addImageToHotel(hotelId, imageFile);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Successfully added image to hotel");
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -158,6 +252,17 @@ public class HotelBookingController {
         return new ResponseEntity<>(roomService.updateRoom(hotelId, roomId, roomDto), HttpStatus.OK);
     }
 
+    @PatchMapping("/{hotelId}/image")
+    public ResponseEntity<byte[]> updateHotelImage(@PathVariable Long hotelId,
+                                                   @RequestParam("imageUrl") MultipartFile imageFile) throws IOException, DataFormatException {
+
+        byte[] imageData = hotelService.updateHotelImage(hotelId, imageFile);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.valueOf(IMAGE_PNG_VALUE))//APPLICATION_OCTET_STREAM_VALUE))
+                .body(imageData);
+    }
+
 
     @DeleteMapping("/hotel/{hotelId}")
     public ResponseEntity<Object> deleteHotel(@PathVariable Long hotelId){
@@ -181,5 +286,19 @@ public class HotelBookingController {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @DeleteMapping("/{hotelId}/rooms/{roomId}/image/{imageName}")
+    public ResponseEntity<Object> deleteImageToRoom(@PathVariable Long hotelId,
+                                                    @PathVariable Long roomId,
+                                                    @PathVariable String imageName){
+
+        roomImageService.deleteImageToRoom(hotelId, roomId, imageName);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Successfully deleted image from a room");
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 
 }
