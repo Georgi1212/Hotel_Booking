@@ -213,7 +213,7 @@ public class HotelBookingController {
         Map<String, String> response = new HashMap<>();
         response.put("message", "Successfully added image to room");
 
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PostMapping("/{hotelId}/newImage")
@@ -225,7 +225,7 @@ public class HotelBookingController {
         Map<String, String> response = new HashMap<>();
         response.put("message", "Successfully added image to hotel");
 
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PatchMapping("/hotel/{hotelId}")
