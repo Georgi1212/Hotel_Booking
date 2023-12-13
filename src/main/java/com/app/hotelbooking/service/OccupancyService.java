@@ -15,21 +15,20 @@ public class OccupancyService {
     private final OccupancyRepository occupancyRepository;
 
     public List<Occupancy> findOccupanciesByRoom(final Room room){
-        return occupancyRepository.findOccupanciesByRoom(room);
+        return occupancyRepository.findAllByRoom(room);
     }
     public boolean isRoomOccupied(final Room room, final LocalDate checkIn, final LocalDate checkOut){
-        List<Occupancy> occupancyListForSpecificRoom = occupancyRepository.findOccupanciesByRoom(room);
+        List<Occupancy> occupancyListForSpecificRoom = occupancyRepository.findAllByRoom(room);
+
+        if(occupancyListForSpecificRoom.isEmpty()){
+            return true;
+        }
 
         for(Occupancy occupancy : occupancyListForSpecificRoom){
             LocalDate occupancyCheckIn = occupancy.getCheck_in();
             LocalDate occupancyCheckOut = occupancy.getCheck_out();
 
-            if( !(((checkIn.isBefore(occupancyCheckIn) && checkIn.isBefore(occupancyCheckOut)) &&
-                            (checkOut.isBefore(occupancyCheckIn) || checkOut.isEqual(occupancyCheckIn)) &&
-                            (checkOut.isBefore(occupancyCheckOut)))  ||
-
-                    ((checkIn.isAfter(occupancyCheckIn) && (checkIn.isAfter(occupancyCheckOut) || checkIn.isEqual(occupancyCheckOut))) &&
-                            (checkOut.isAfter(occupancyCheckIn) && checkOut.isAfter(occupancyCheckOut)))) ) {
+            if(checkIn.isBefore(occupancyCheckOut) && checkOut.isAfter(occupancyCheckIn)){
 
                 return true;
             }

@@ -4,6 +4,9 @@ ADD CONSTRAINT check_user_type CHECK (user_type IN ('ADMIN', 'USER'));
 ALTER TABLE users
 ADD CONSTRAINT check_unique_email UNIQUE (email);
 
+ALTER TABLE users
+ADD CONSTRAINT check_unique_verify_code UNIQUE (verify_code);
+
 ALTER TABLE hotel
 ADD CONSTRAINT check_hotel_rate CHECK (rate >= 1 AND rate <= 10);
 

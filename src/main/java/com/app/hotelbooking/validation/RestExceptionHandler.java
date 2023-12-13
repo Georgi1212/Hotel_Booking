@@ -23,6 +23,12 @@ public class RestExceptionHandler {
     private static final String EXCEPTION_MESSAGE = "Exception occurred: {}";
     private static final String ERROR_MESSAGE = "Message";
 
+    @ExceptionHandler({IllegalArgumentException.class})
+    public ResponseEntity<Map<String, String>> handleIllegalArgumentException(IllegalArgumentException exception) {
+        log.error(EXCEPTION_MESSAGE, exception.getMessage());
+        return new ResponseEntity<>(Map.of(ERROR_MESSAGE, exception.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler({ObjectNotFoundException.class})
     public ResponseEntity<Map<String, String>> handleObjectNotFoundException(ObjectNotFoundException exception) {
         log.error(EXCEPTION_MESSAGE, exception.getMessage());

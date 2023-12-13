@@ -42,7 +42,7 @@ public class Room {
     @Column(name = "num_adults", nullable = false)
     private int numAdults;
 
-    @OneToMany(mappedBy = "room", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "room", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private Set<Occupancy> occupancies;
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.REMOVE)

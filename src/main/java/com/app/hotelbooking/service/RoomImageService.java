@@ -1,7 +1,6 @@
 package com.app.hotelbooking.service;
 
 import com.app.hotelbooking.dto.RoomImageDto;
-import com.app.hotelbooking.imageUtils.ImageUtils;
 import com.app.hotelbooking.mapper.RoomImageMapper;
 import com.app.hotelbooking.model.Room;
 import com.app.hotelbooking.model.RoomImage;
@@ -29,11 +28,8 @@ public class RoomImageService {
 
         final RoomImage roomImage = roomImageRepository.findFirstByImageNameAndRoom(imageName, room)
                 .orElseThrow(() -> new ObjectFoundException("There is no such image"));
-        try {
-            return ImageUtils.decompressImage(roomImage.getImageUrl());
-        } catch (DataFormatException | IOException e) {
-            throw new RuntimeException(e.getMessage());
-        }
+
+        return roomImage.getImageUrl();
     }
     public List<RoomImageDto> getAllImagesByHotelIdAndRoomId(final Long hotelId, final Long roomId){
         final Room room = roomService.getRoomByHotelAndRoomId(hotelId, roomId);
@@ -44,7 +40,7 @@ public class RoomImageService {
         final Room room = roomService.getRoomByHotelAndRoomId(hotelId, roomId);
 
         final RoomImage image = new RoomImage();
-        image.setImageUrl(ImageUtils.compressImage(roomImage.getBytes()));
+        image.setImageUrl(roomImage.getBytes());
         image.setImageName(roomImage.getOriginalFilename());
 
         image.setRoom(room);

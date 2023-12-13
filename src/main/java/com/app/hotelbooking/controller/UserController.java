@@ -29,11 +29,7 @@ public class UserController {
     private final EmailSenderService emailSenderService;
     private final JwtService jwtService;
 
-    /**
-     *
-     * @param email  email of the user
-     * @return userDto object
-     */
+
     @GetMapping("/userInfo/{email}")
     public ResponseEntity<UserDto> getUser(@PathVariable String email) {
         User user = userService.findUserByEmail(email).orElseThrow(() -> new ObjectNotFoundException("User does not exist!"));
@@ -41,20 +37,23 @@ public class UserController {
         return new ResponseEntity<>(userMapper.toDto(user), HttpStatus.OK);
     }
 
-    /**
-     *
-     * @param userDto  object, that contains information about the user's request
-     * @return response with successfully added user
-     */
+
     @PostMapping("/signup")
     public ResponseEntity<Object> addUser(@RequestBody UserDto userDto){
         //check if userDto.getPassword() == userDto.getConfirmPassword()
         //check if password is valid based on regex
         //make endpoint http://localhost:8079/verifyEmail/{token}, in which the user will be added!!!
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (int i = 0; i < 16; i++) {
+            int randomDigit = (int) (Math.random() * 10); // Generate a random digit (0-9)
+            stringBuilder.append(randomDigit);
+        }
+
+        String verifyCode = stringBuilder.toString();
 
         User newUser = userMapper.toEntity(userDto);
-        //newUser.setEnabled(false);
-        userService.addUser(newUser);
+        userService.addUser(newUser, verifyCode);
 
         String jwtToken = jwtService.generateToken(newUser);
 
@@ -63,16 +62,16 @@ public class UserController {
         response.put("token", jwtToken);
 
         String subject = "Email verification:";
-        String body = "Click here, in order to verify your email: http://localhost:4200/users/verifyEmail/" + newUser.getEmail();
+        String body = "Click here, in order to verify your email: http://localhost:4200/users/verifyEmail/" + verifyCode;
 
         emailSenderService.sendEmail(newUser.getEmail(), subject, body);
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @PatchMapping("/verifyEmail/{email}")
-    public ResponseEntity<Object> verifyEmail(@PathVariable String email){
-        boolean isVerified = userService.verifyEmail(email);
+    @PatchMapping("/verifyEmail/{verifyCode}")
+    public ResponseEntity<Object> verifyEmail(@PathVariable String verifyCode){
+        boolean isVerified = userService.verifyEmail(verifyCode);
         Map<String, String> response = new HashMap<>();
 
         if(isVerified){
@@ -84,12 +83,6 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    /**
-     *
-     * @param email - email of the user
-     * @param toUpdateUserDto object, that contains information about the user's request
-     * @return updated userDto object, that contains information about the updated user's data (response)
-     */
     @PatchMapping("/updateUser/{email}")
     public ResponseEntity<UserDto> updateUser(@PathVariable String email,
                                               @RequestBody UpdateUserDto toUpdateUserDto){
@@ -102,11 +95,6 @@ public class UserController {
         return new ResponseEntity<>(userMapper.toDto(user), HttpStatus.OK);
     }
 
-    /**
-     *
-     * @param email email of the user
-     * @return response with message for successfully deleted user
-     */
     @DeleteMapping("/userInfo/{email}")
     public ResponseEntity<Object> deleteUser(@PathVariable String email){
         User user = userService.findUserByEmail(email).orElseThrow(() -> new ObjectNotFoundException("The is no such user"));

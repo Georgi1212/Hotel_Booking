@@ -82,6 +82,10 @@ public class User implements UserDetails {
     @Column(name = "user_type", nullable = false)
     private UserType userType;
 
+    @Column(name = "verify_code", nullable = false)
+    @Size(max = 16)
+    private String verifyCode;
+
     @OneToMany(mappedBy = "host", cascade = CascadeType.REMOVE)
     private Set<Hotel> hotels;
 

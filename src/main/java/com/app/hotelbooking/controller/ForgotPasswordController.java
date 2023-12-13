@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static java.util.Objects.isNull;
+
 @Slf4j
 @RestController
 @RequestMapping
@@ -31,15 +33,16 @@ public class ForgotPasswordController {
 
         Map<String, String> response = new HashMap<>();
 
-        Optional<User> user = userService.findUserByEmail(emailDto.getEmail());
+        User user = userService.getUserByEmail(emailDto.getEmail());
+        String verifyCode = user.getVerifyCode();
 
-        if(user.isEmpty()){
+        if(isNull(user)){
             response.put("message", "User with this provided email is not found");
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
 
         String subject = "Password reset:";
-        String body = "Click here, in order to reset your password: http://localhost:4200/resetPassword/" + emailDto.getEmail();
+        String body = "Click here, in order to reset your password: http://localhost:4200/resetPassword/" + verifyCode;
 
         emailSenderService.sendEmail(emailDto.getEmail(), subject, body);
 
@@ -48,10 +51,10 @@ public class ForgotPasswordController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PatchMapping("/resetPassword/{email}")
-    public ResponseEntity<Object> resetPassword(@PathVariable String email, @Valid @RequestBody PasswordDto passwordDto) {
+    @PatchMapping("/resetPassword/{verifyCode}")
+    public ResponseEntity<Object> resetPassword(@PathVariable String verifyCode, @Valid @RequestBody PasswordDto passwordDto) {
 
-        boolean isPasswordReset = userService.updateUserPassword(email, passwordDto.getPassword(), passwordDto.getConfirm_password());
+        boolean isPasswordReset = userService.updateUserPassword(verifyCode, passwordDto.getPassword(), passwordDto.getConfirm_password());
         Map<String, String> response = new HashMap<>();
 
         if(!isPasswordReset){

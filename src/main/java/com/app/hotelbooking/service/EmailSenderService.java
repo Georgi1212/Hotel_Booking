@@ -20,7 +20,7 @@ public class EmailSenderService {
             //String token = generateToken();
             //String newBody = body.concat(token);
 
-            mimeMessageHelper.setFrom("fn72039@g.fmi.uni-sofia.bg");
+            mimeMessageHelper.setFrom("georgitest19@gmail.com");
             mimeMessageHelper.setTo(to);
             mimeMessageHelper.setSubject(subject);
             mimeMessageHelper.setText(body);

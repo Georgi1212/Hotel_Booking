@@ -29,8 +29,17 @@ public class UserService {
         return userRepository.findFirstByEmail(email);
     }
 
-    public void addUser(final User user)
+    public User getUserByEmail(final String email){
+        return userRepository.findFirstByEmail(email)
+                .orElseThrow(() -> new ObjectNotFoundException("There is no such user"));
+    }
+
+    public void addUser(final User user, final String verifyCode)
     {
+        if(!user.getEmail().endsWith("@gmail.com")){
+            throw new IllegalArgumentException("You can use only gmail accounts");
+        }
+
         if(user == null)
             throw new ObjectNotFoundException("Invalid user!");
 
@@ -38,6 +47,7 @@ public class UserService {
         if(foundUser != null) throw new ObjectNotFoundException("User already exists!");
 
         user.setEnabled(false);
+        user.setVerifyCode(verifyCode);
         userRepository.save(user);
     }
 
@@ -67,9 +77,9 @@ public class UserService {
 
     }
 
-    public boolean verifyEmail(String email)
+    public boolean verifyEmail(final String verifyCode)
     {
-        User user = userRepository.findFirstByEmail(email).orElseThrow(() -> new ObjectNotFoundException("Invalid user!"));
+        User user = userRepository.findFirstByVerifyCode(verifyCode).orElseThrow(() -> new ObjectNotFoundException("Invalid user!"));
 
         if(!user.isEnabled()){
             user.setEnabled(true);
@@ -81,9 +91,9 @@ public class UserService {
         }
     }
 
-    public boolean updateUserPassword(String email, String password, String confirmPassword)
+    public boolean updateUserPassword(String verifyCode, String password, String confirmPassword)
     {
-        User user = userRepository.findFirstByEmail(email).orElseThrow(() -> new ObjectNotFoundException("Invalid user!"));
+        User user = userRepository.findFirstByVerifyCode(verifyCode).orElseThrow(() -> new ObjectNotFoundException("Invalid user!"));
 
         if(password.equals(confirmPassword)){
             user.setPassword(passwordEncoder.encode(password));

@@ -11,6 +11,5 @@ import java.util.Optional;
 
 @Repository
 public interface OccupancyRepository extends JpaRepository<Occupancy, Long> {
-
-    List<Occupancy> findOccupanciesByRoom(Room room);
+    List<Occupancy> findAllByRoom(Room room);
 }

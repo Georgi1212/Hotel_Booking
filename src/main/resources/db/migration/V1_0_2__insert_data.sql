@@ -1,8 +1,8 @@
-insert into users (username, email, password, first_name, last_name, phone_number, date_of_birth, address, created_at, last_modified_date, is_enabled, user_type)
-values ('Georgi', 'georgi@test.com', '123', 'Georgi', 'Tsekov', '0877568974', null, null, '2023-05-29 00:00:00.000000', '2023-05-29 00:00:00.000000', TRUE, 'USER');
+insert into users (username, email, password, first_name, last_name, phone_number, date_of_birth, address, created_at, last_modified_date, is_enabled, user_type, verify_code)
+values ('Georgi', 'georgi@test.com', '123', 'Georgi', 'Tsekov', '0877568974', null, null, '2023-05-29 00:00:00.000000', '2023-05-29 00:00:00.000000', TRUE, 'USER', '125485772');
 
-insert into users (username, email, password, first_name, last_name, phone_number, date_of_birth, address, created_at, last_modified_date, is_enabled, user_type)
-values ('Petar', 'petar@test.com', '123', 'Petar', 'Nikolov', '0877578974', null, null, '2023-05-29 00:00:00.000000', '2023-05-29 00:00:00.000000', TRUE, 'ADMIN');
+insert into users (username, email, password, first_name, last_name, phone_number, date_of_birth, address, created_at, last_modified_date, is_enabled, user_type, verify_code)
+values ('Petar', 'petar@test.com', '123', 'Petar', 'Nikolov', '0877578974', null, null, '2023-05-29 00:00:00.000000', '2023-05-29 00:00:00.000000', TRUE, 'ADMIN', '10342324424');
 
 ------------------
 -- here you have to check if the host_id is an admin (user can book and see the other hotels,

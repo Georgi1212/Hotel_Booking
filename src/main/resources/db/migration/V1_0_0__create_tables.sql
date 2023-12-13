@@ -12,7 +12,8 @@ CREATE TABLE users
     created_at          TIMESTAMP             NOT NULL DEFAULT CURRENT_TIMESTAMP,
     last_modified_date  TIMESTAMP             NOT NULL DEFAULT CURRENT_TIMESTAMP,
     is_enabled          BOOLEAN               NOT NULL,
-    user_type           VARCHAR(5)            NOT NULL --user or admin (constraint)
+    user_type           VARCHAR(5)            NOT NULL, --user or admin (constraint)
+    verify_code         VARCHAR(16)           NOT NULL
 );
 
 CREATE TABLE hotel

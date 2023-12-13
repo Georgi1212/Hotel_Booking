@@ -34,6 +34,32 @@ public class HotelBookingController {
     private final RoomService roomService;
     private final RoomImageService roomImageService;
     private final BookingService bookingService;
+//TODO functionality for cancelling a reservation/booking?
+
+    @GetMapping("/unique-countries")
+    public ResponseEntity<List<String>> getAllUniqueCountries() {
+
+        return new ResponseEntity<>(hotelService.getUniqueCountries(), HttpStatus.OK);
+    }
+
+    @GetMapping("/{country}/cities")
+    public ResponseEntity<List<String>> getCitiesByCountry(@PathVariable String country){
+
+        return new ResponseEntity<>(hotelService.getCitiesByCountry(country), HttpStatus.OK);
+    }
+
+    @GetMapping("/available")
+    public ResponseEntity<List<HotelDto>> getAvailableHotels(@RequestParam String country,
+                                                             @RequestParam(required = false) String city,
+                                                             @RequestParam LocalDate checkIn,
+                                                             @RequestParam LocalDate checkOut){
+        try {
+            List<HotelDto> availableHotels = hotelService.getAvailableHotels(country, city, checkIn, checkOut);
+            return new ResponseEntity<>(availableHotels, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @GetMapping("/hotel/{hotelId}")
     public ResponseEntity<HotelDto> getHotelById(@PathVariable Long hotelId) {
