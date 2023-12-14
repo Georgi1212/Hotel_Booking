@@ -20,7 +20,6 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.DataFormatException;
 
 import static org.springframework.http.MediaType.*;
 
@@ -86,15 +85,22 @@ public class HotelBookingController {
         return new ResponseEntity<>(hotelService.getHotelsByCountry(country), HttpStatus.OK);
     }
 
+    @GetMapping("/{country}/{city}/{street}")
+    public ResponseEntity<Long> getHotelByCountryCityStreet(@PathVariable String country,
+                                                            @PathVariable String city,
+                                                            @PathVariable String street) {
+        return new ResponseEntity<>(hotelService.getHotelByCountryCityStreet(country, city, street), HttpStatus.OK);
+    }
+
     @GetMapping("/{hotelId}/rooms/{roomId}")
     public ResponseEntity<RoomDto> getRoomByHotelIdAndRoomId(@PathVariable Long hotelId,
-                                                           @PathVariable Long roomId) {
+                                                             @PathVariable Long roomId) {
         Room room = roomService.getRoomByHotelAndRoomId(hotelId, roomId);
         return new ResponseEntity<>(roomService.toRoomDto(room), HttpStatus.OK);
     }
 
     @GetMapping("/{hotelId}/rooms")
-    public ResponseEntity<List<RoomDto>> getRoomsByHotelId(@PathVariable Long hotelId) {
+    public ResponseEntity<List<RoomDtoWithId>> getRoomsByHotelId(@PathVariable Long hotelId) {
         return new ResponseEntity<>(roomService.getAllRoomDtoByHotelId(hotelId), HttpStatus.OK);
     }
 
@@ -280,7 +286,7 @@ public class HotelBookingController {
 
     @PatchMapping("/{hotelId}/image")
     public ResponseEntity<byte[]> updateHotelImage(@PathVariable Long hotelId,
-                                                   @RequestParam("imageUrl") MultipartFile imageFile) throws IOException, DataFormatException {
+                                                   @RequestParam("imageUrl") MultipartFile imageFile) throws IOException {
 
         byte[] imageData = hotelService.updateHotelImage(hotelId, imageFile);
 

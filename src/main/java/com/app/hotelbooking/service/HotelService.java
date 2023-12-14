@@ -7,6 +7,7 @@ import com.app.hotelbooking.mapper.RoomMapper;
 import com.app.hotelbooking.model.*;
 import com.app.hotelbooking.repository.HotelRepository;
 import com.app.hotelbooking.repository.RoomRepository;
+import com.app.hotelbooking.validation.ObjectFoundException;
 import com.app.hotelbooking.validation.ObjectNotFoundException;
 import lombok.AllArgsConstructor;
 import net.bytebuddy.asm.Advice;
@@ -68,6 +69,13 @@ public class HotelService {
         }
 
         return hotelMapper.toDtoCollection(availableHotels);
+    }
+
+    public Long getHotelByCountryCityStreet(final String country, final String city, final String street){
+        Hotel hotel = hotelRepository.findFirstByCountryAndCityAndStreet(country, city, street)
+                .orElseThrow(() -> new ObjectFoundException("There is no such hotel"));
+
+        return hotel.getId();
     }
 
     public HotelDto toHotelDto(Hotel hotel){

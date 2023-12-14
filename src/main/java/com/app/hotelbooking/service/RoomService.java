@@ -1,9 +1,11 @@
 package com.app.hotelbooking.service;
 
 import com.app.hotelbooking.dto.RoomDto;
+import com.app.hotelbooking.dto.RoomDtoWithId;
 import com.app.hotelbooking.enums.RoomType;
 import com.app.hotelbooking.mapper.HotelMapper;
 import com.app.hotelbooking.mapper.RoomMapper;
+import com.app.hotelbooking.mapper.RoomWithIdMapper;
 import com.app.hotelbooking.model.Hotel;
 import com.app.hotelbooking.model.Room;
 import com.app.hotelbooking.model.RoomSizeType;
@@ -25,6 +27,7 @@ import static java.util.Objects.nonNull;
 public class RoomService {
     private final RoomRepository roomRepository;
     private final RoomMapper roomMapper;
+    private final RoomWithIdMapper roomWithIdMapper;
 
     private final RoomImageRepository roomImageRepository;
     private final RoomSizeTypeRepository roomSizeTypeRepository;
@@ -57,11 +60,11 @@ public class RoomService {
         return room;
     }
 
-    public List<RoomDto> getAllRoomDtoByHotelId(final Long hotelId){
+    public List<RoomDtoWithId> getAllRoomDtoByHotelId(final Long hotelId){
         Hotel hotel = hotelRepository.findFirstById(hotelId)
                 .orElseThrow(() -> new ObjectNotFoundException("There is no such hotel"));
 
-        return roomMapper.toDtoCollection(roomRepository.findRoomsByHotel(hotel));
+        return roomWithIdMapper.toDtoCollection(roomRepository.findRoomsByHotel(hotel));
     }
 
     public List<Room> getAllRoomEntitiesByHotelId(final Long hotelId){

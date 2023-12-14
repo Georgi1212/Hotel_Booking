@@ -16,6 +16,7 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
     Optional<Hotel> findFirstById(final Long id);
     List<Hotel> findHotelsByCountry(final String country);
     List<Hotel> findHotelsByCountryAndCity(final String country, final String city);
+    Optional<Hotel> findFirstByCountryAndCityAndStreet(final String country, final String city, final String street);
     List<Hotel> findHotelsByHost(final User user);
 
     @Query("SELECT DISTINCT h.country FROM Hotel h")
