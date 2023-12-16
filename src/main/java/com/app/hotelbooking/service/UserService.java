@@ -25,6 +25,12 @@ public class UserService {
         return userRepository.findFirstByUsername(username);
     }
 
+    public String getUserTypeByEmail(final String email){
+        User user = userRepository.findFirstByEmail(email).orElseThrow(() -> new ObjectNotFoundException("Invalid user!"));
+
+        return user.getUserType().toString();
+    }
+
     public Optional<User> findUserByEmail(final String email){
         return userRepository.findFirstByEmail(email);
     }
@@ -61,10 +67,11 @@ public class UserService {
         userRepository.delete(user);
     }
 
-    public User updateUserByEmail(String email, String first_name, String last_name, String phoneNumber, LocalDate dob, String address)
+    public User updateUserByEmail(String username, String email, String first_name, String last_name, String phoneNumber, LocalDate dob, String address)
     {
         User user = userRepository.findFirstByEmail(email).orElseThrow(() -> new ObjectNotFoundException("Invalid user!"));
 
+        if(nonNull(username)) user.setUsername(username);
         if(nonNull(first_name)) user.setFirstName(first_name);
         if(nonNull(last_name)) user.setLastName(last_name);
         if(nonNull(phoneNumber)) user.setPhoneNumber(phoneNumber);

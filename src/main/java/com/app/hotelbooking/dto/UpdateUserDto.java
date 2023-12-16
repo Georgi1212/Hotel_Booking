@@ -16,6 +16,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class UpdateUserDto {
 
+    @Size(min = 1, max = 32)
+    private String username;
     @Size(max = 32)
     private String firstName;
     @Size(max = 32)

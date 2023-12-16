@@ -2,8 +2,12 @@ package com.app.hotelbooking.service;
 
 
 import com.app.hotelbooking.dto.HotelDto;
+import com.app.hotelbooking.dto.HotelDtoWithId;
+import com.app.hotelbooking.dto.RoomDtoWithId;
 import com.app.hotelbooking.mapper.HotelMapper;
+import com.app.hotelbooking.mapper.HotelWithIdMapper;
 import com.app.hotelbooking.mapper.RoomMapper;
+import com.app.hotelbooking.mapper.RoomWithIdMapper;
 import com.app.hotelbooking.model.*;
 import com.app.hotelbooking.repository.HotelRepository;
 import com.app.hotelbooking.repository.RoomRepository;
@@ -29,6 +33,7 @@ import static java.util.Objects.nonNull;
 public class HotelService {
     private final HotelRepository hotelRepository;
     private final HotelMapper hotelMapper;
+    private final HotelWithIdMapper hotelWithIdMapper;
 
     private final RoomService roomService;
     private final RoomRepository roomRepository;
@@ -46,7 +51,7 @@ public class HotelService {
         return hotelRepository.findAllCitiesByCountry(country);
     }
 
-    public List<HotelDto> getAvailableHotels(final String country, final String city, final LocalDate checkIn, final LocalDate checkOut){
+    public List<HotelDtoWithId> getAvailableHotels(final String country, final String city, final LocalDate checkIn, final LocalDate checkOut){
         List<Hotel> availableHotels = new ArrayList<>();
         List<Hotel> allHotels;
 
@@ -68,7 +73,7 @@ public class HotelService {
             }
         }
 
-        return hotelMapper.toDtoCollection(availableHotels);
+        return hotelWithIdMapper.toDtoCollection(availableHotels);
     }
 
     public Long getHotelByCountryCityStreet(final String country, final String city, final String street){
@@ -90,7 +95,7 @@ public class HotelService {
         );
     }
 
-    public List<HotelDto> getAllHotelsByEmail(final String email){
+    public List<HotelDtoWithId> getAllHotelsByEmail(final String email){
         final User user = userService.findUserByEmail(email)
                 .orElseThrow(() -> new ObjectNotFoundException("User does not exist"));
 
@@ -98,7 +103,7 @@ public class HotelService {
             throw new IllegalArgumentException("Only admins could be hotel hosts");
         }
 
-        return hotelMapper.toDtoCollection(hotelRepository.findHotelsByHost(user));
+        return hotelWithIdMapper.toDtoCollection(hotelRepository.findHotelsByHost(user));
     }
 
     public List<HotelDto> getHotelsByCountryAndCity(final String country, final String city){

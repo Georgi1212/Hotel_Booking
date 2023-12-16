@@ -37,6 +37,10 @@ public class UserController {
         return new ResponseEntity<>(userMapper.toDto(user), HttpStatus.OK);
     }
 
+    @GetMapping("/{email}/userType")
+    public ResponseEntity<String> getUserTypeByEmail(@PathVariable String email) {
+        return new ResponseEntity<>(userService.getUserTypeByEmail(email), HttpStatus.OK);
+    }
 
     @PostMapping("/signup")
     public ResponseEntity<Object> addUser(@RequestBody UserDto userDto){
@@ -87,7 +91,7 @@ public class UserController {
     public ResponseEntity<UserDto> updateUser(@PathVariable String email,
                                               @RequestBody UpdateUserDto toUpdateUserDto){
 
-        User user = userService.updateUserByEmail(email,
+        User user = userService.updateUserByEmail(toUpdateUserDto.getUsername(), email,
                 toUpdateUserDto.getFirstName(), toUpdateUserDto.getLastName(),
                 toUpdateUserDto.getPhoneNumber(), toUpdateUserDto.getDateOfBirth(),
                 toUpdateUserDto.getAddress());

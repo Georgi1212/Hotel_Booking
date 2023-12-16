@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RoomImageDto {
-
+    private Long roomId;
     private String imageName;
+    private byte[] imageUrl;
 }

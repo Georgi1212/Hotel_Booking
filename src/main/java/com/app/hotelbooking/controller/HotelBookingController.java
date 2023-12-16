@@ -48,13 +48,25 @@ public class HotelBookingController {
     }
 
     @GetMapping("/available")
-    public ResponseEntity<List<HotelDto>> getAvailableHotels(@RequestParam String country,
-                                                             @RequestParam(required = false) String city,
-                                                             @RequestParam LocalDate checkIn,
-                                                             @RequestParam LocalDate checkOut){
+    public ResponseEntity<List<HotelDtoWithId>> getAvailableHotels(@RequestParam String country,
+                                                                   @RequestParam(required = false) String city,
+                                                                   @RequestParam LocalDate checkIn,
+                                                                   @RequestParam LocalDate checkOut){
         try {
-            List<HotelDto> availableHotels = hotelService.getAvailableHotels(country, city, checkIn, checkOut);
+            List<HotelDtoWithId> availableHotels = hotelService.getAvailableHotels(country, city, checkIn, checkOut);
             return new ResponseEntity<>(availableHotels, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/{hotelId}/availableRooms")
+    public ResponseEntity<List<RoomDtoWithId>> getAvailableRooms(@PathVariable Long hotelId,
+                                                                 @RequestParam LocalDate checkIn,
+                                                                 @RequestParam LocalDate checkOut){
+        try {
+            List<RoomDtoWithId> availableRoomsByHotel = roomService.getAvailableRooms(hotelId, checkIn, checkOut);
+            return new ResponseEntity<>(availableRoomsByHotel, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -67,7 +79,7 @@ public class HotelBookingController {
     }
 
     @GetMapping("/user/{userEmail}")
-    public ResponseEntity<List<HotelDto>> getHotelsByUserId(@PathVariable String userEmail) {
+    public ResponseEntity<List<HotelDtoWithId>> getHotelsByUserId(@PathVariable String userEmail) {
 
         return new ResponseEntity<>(hotelService.getAllHotelsByEmail(userEmail), HttpStatus.OK);
     }

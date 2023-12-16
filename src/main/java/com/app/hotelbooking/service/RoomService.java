@@ -18,6 +18,8 @@ import com.app.hotelbooking.validation.ObjectNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
@@ -31,6 +33,8 @@ public class RoomService {
 
     private final RoomImageRepository roomImageRepository;
     private final RoomSizeTypeRepository roomSizeTypeRepository;
+
+    private final OccupancyService occupancyService;
 
     private final HotelRepository hotelRepository;
     private final HotelMapper hotelMapper;
@@ -72,6 +76,19 @@ public class RoomService {
                 .orElseThrow(() -> new ObjectNotFoundException("There is no such hotel"));
 
         return roomRepository.findRoomsByHotel(hotel);
+    }
+
+    public List<RoomDtoWithId> getAvailableRooms(final Long hotelId, final LocalDate checkIn, final LocalDate checkOut){
+        List<Room> availableRooms = new ArrayList<>();
+        List<Room> allRoomsByHotel = getAllRoomEntitiesByHotelId(hotelId);
+
+        for(Room room : allRoomsByHotel){
+            if(!occupancyService.isRoomOccupied(room, checkIn, checkOut)){
+                availableRooms.add(room);
+            }
+        }
+
+        return roomWithIdMapper.toDtoCollection(availableRooms);
     }
 
     public void addRoom(final Long hotelId, final RoomDto roomDto){
