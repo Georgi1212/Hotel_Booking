@@ -35,17 +35,19 @@ public class RoomImageService {
 
         return roomImageMapper.toDtoCollection(roomImageRepository.findAllByRoom(room));
     }
-    public void addImageToRoom(final Long hotelId, final Long roomId, final MultipartFile roomImage) throws IOException {
+    public void addImageToRoom(final Long hotelId, final Long roomId, final List<MultipartFile> roomImages) throws IOException {
         final Room room = roomService.getRoomByHotelAndRoomId(hotelId, roomId);
 
-        final RoomImage image = new RoomImage();
-        image.setImageUrl(roomImage.getBytes());
-        image.setImageName(roomImage.getOriginalFilename());
+        for(MultipartFile roomImage : roomImages) {
+            final RoomImage image = new RoomImage();
+            image.setImageUrl(roomImage.getBytes());
+            image.setImageName(roomImage.getOriginalFilename());
 
-        image.setRoom(room);
-        room.getRoomImages().add(image);
+            image.setRoom(room);
+            room.getRoomImages().add(image);
 
-        roomImageRepository.save(image);
+            roomImageRepository.save(image);
+        }
     }
 
     public void deleteImageToRoom(final Long hotelId, final Long roomId, final String imageName){

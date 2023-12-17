@@ -250,12 +250,12 @@ public class HotelBookingController {
     @PostMapping("/{hotelId}/rooms/{roomId}/newImage")
     public ResponseEntity<Object> addImage(@PathVariable Long hotelId,
                                            @PathVariable Long roomId,
-                                           @RequestParam("imageUrl") MultipartFile imageFile) throws IOException {
+                                           @RequestParam("imageUrl") List<MultipartFile> imageFile) throws IOException {
 
         roomImageService.addImageToRoom(hotelId, roomId, imageFile);
 
         Map<String, String> response = new HashMap<>();
-        response.put("message", "Successfully added image to room");
+        response.put("message", "Successfully added images to room");
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
