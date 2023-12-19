@@ -42,6 +42,8 @@ public class BookingService {
     private BookingDto getBookingDto(final Booking booking){   //, final Occupancy occupancy, final Room room){
         BookingDto bookingDto = new BookingDto();
 
+        bookingDto.setBookingId(booking.getId());
+
         bookingDto.setUserEmail(booking.getUser().getEmail());
         bookingDto.setUserFirstName(booking.getUser().getFirstName());
         bookingDto.setUserLastName(booking.getUser().getLastName());

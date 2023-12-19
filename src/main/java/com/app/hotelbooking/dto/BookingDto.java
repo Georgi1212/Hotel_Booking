@@ -17,6 +17,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class BookingDto {
 
+    private Long bookingId;
     @Email()
     @Size(max = 64)
     private String userEmail;
