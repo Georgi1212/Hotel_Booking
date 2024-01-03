@@ -21,7 +21,7 @@ public class OccupancyService {
         List<Occupancy> occupancyListForSpecificRoom = occupancyRepository.findAllByRoom(room);
 
         if(occupancyListForSpecificRoom.isEmpty()){
-            return true;
+            return false;
         }
 
         for(Occupancy occupancy : occupancyListForSpecificRoom){

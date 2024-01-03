@@ -37,8 +37,8 @@ public class UserController {
         return new ResponseEntity<>(userMapper.toDto(user), HttpStatus.OK);
     }
 
-    @GetMapping("/{email}/userType")
-    public ResponseEntity<String> getUserTypeByEmail(@PathVariable String email) {
+    @GetMapping("/userType")
+    public ResponseEntity<String> getUserTypeByEmail(@RequestParam("email") String email) {
         return new ResponseEntity<>(userService.getUserTypeByEmail(email), HttpStatus.OK);
     }
 

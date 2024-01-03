@@ -70,6 +70,13 @@ public class HotelService {
                     availableHotels.add(hotel);
                     break;
                 }
+
+                // Check if the room is not present in the occupancy table
+                boolean roomNotOccupied = room.getOccupancies().isEmpty();
+                if (roomNotOccupied) {
+                    availableHotels.add(hotel);
+                    break;
+                }
             }
         }
 

@@ -250,4 +250,21 @@ public class BookingService {
         occupancyRepository.save(occupancy);
         bookingRepository.save(booking);
     }
+
+    public void deleteBooking(final Long bookingId){
+        Booking booking = bookingRepository.findBookingById(bookingId)
+                .orElseThrow(() -> new ObjectNotFoundException("There is no such booking"));
+
+        Occupancy occupancy = occupancyRepository.findOccupancyById(booking.getOccupancy().getId())
+                .orElseThrow(() -> new ObjectNotFoundException("There is no such occupancy"));
+
+
+        try {
+            occupancyRepository.delete(occupancy);
+            bookingRepository.delete(booking);
+        } catch (Exception exception) {
+            System.out.println(exception.getMessage());
+        }
+
+    }
 }

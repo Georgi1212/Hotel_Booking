@@ -11,5 +11,7 @@ import java.util.Optional;
 
 @Repository
 public interface OccupancyRepository extends JpaRepository<Occupancy, Long> {
+
+    Optional<Occupancy> findOccupancyById(Long id);
     List<Occupancy> findAllByRoom(Room room);
 }

@@ -86,6 +86,11 @@ public class RoomService {
             if(!occupancyService.isRoomOccupied(room, checkIn, checkOut)){
                 availableRooms.add(room);
             }
+
+            boolean roomNotOccupied = room.getOccupancies().isEmpty();
+            if (roomNotOccupied) {
+                availableRooms.add(room);
+            }
         }
 
         return roomWithIdMapper.toDtoCollection(availableRooms);

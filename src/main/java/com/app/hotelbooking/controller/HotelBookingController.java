@@ -344,5 +344,16 @@ public class HotelBookingController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @DeleteMapping("/booking/{bookingId}")
+    public ResponseEntity<Object> deleteBooking(@PathVariable Long bookingId){
+        bookingService.deleteBooking(bookingId);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Successfully cancelled booking for a room");
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+
+    }
+
 
 }
