@@ -124,12 +124,3 @@ The system follows the **Model–View–Controller (MVC)** architecture pattern,
 ### PayPal Sandbox API  
 - Enables safe and fast online payments for bookings.  
 - Confirms payment success before saving the booking in the system.  
-
----
-
-## Innovative Features  
-
-- ✅ **Email Verification System** – ensures account authenticity.  
-- 🔒 **Real-Time Room Locking** – prevents double-booking conflicts.  
-- 💸 **Instant PayPal Integration** – enables secure online transactions.  
-- 🧱 **MVC Modular Architecture** – simplifies scalability and maintenance.  
