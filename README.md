@@ -24,7 +24,6 @@
 ## About the Project  
 
 **VoyageBooking** is a web-based **hotel reservation system** designed to streamline hotel management and booking operations.  
-Developed as part of the *“E-Business Systems”* course at **Sofia University “St. Kliment Ohridski”**, it provides:  
 - A centralized booking management platform  
 - Real-time room availability tracking  
 - Secure online payments via **PayPal**  
