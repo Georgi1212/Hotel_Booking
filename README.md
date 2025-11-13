@@ -17,8 +17,7 @@
 - [System Roles](#system-roles)  
 - [Database Structure](#database-structure)  
 - [Booking Flow](#booking-flow)  
-- [Integration with External Systems](#integration-with-external-systems)  
-- [Innovative Features](#innovative-features)
+- [Integration with External Systems](#integration-with-external-systems)
 
 ---
 
