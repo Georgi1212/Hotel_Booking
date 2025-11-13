@@ -10,15 +10,15 @@
 ---
 
 ## 📖 Table of Contents  
-- [About the Project](#-about-the-project)  
-- [Architecture](#-architecture)  
-- [Technologies Used](#-technologies-used)  
-- [Features](#-features)  
-- [System Roles](#-system-roles)  
-- [Database Structure](#-database-structure)  
-- [Booking Flow](#-booking-flow)  
-- [Integration with External Systems](#-integration-with-external-systems)  
-- [Innovative Features](#-innovative-features)
+- [About the Project](#about-the-project)  
+- [Architecture](#architecture)  
+- [Technologies Used](#technologies-used)  
+- [Features](#features)  
+- [System Roles](#system-roles)  
+- [Database Structure](#database-structure)  
+- [Booking Flow](#booking-flow)  
+- [Integration with External Systems](#integration-with-external-systems)  
+- [Innovative Features](#innovative-features)
 
 ---
 
