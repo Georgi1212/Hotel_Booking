@@ -22,7 +22,7 @@
 
 ---
 
-## 🧾 About the Project  
+## About the Project  
 
 **VoyageBooking** is a web-based **hotel reservation system** designed to streamline hotel management and booking operations.  
 Developed as part of the *“E-Business Systems”* course at **Sofia University “St. Kliment Ohridski”**, it provides:  
@@ -34,7 +34,7 @@ Both **users** and **hotel administrators** can interact with the system efficie
 
 ---
 
-## 🏗️ Architecture  
+## Architecture  
 
 The system follows the **Model–View–Controller (MVC)** architecture pattern, promoting scalability and clean separation of concerns:  
 
@@ -44,7 +44,7 @@ The system follows the **Model–View–Controller (MVC)** architecture pattern,
 
 ---
 
-## 💻 Technologies Used  
+## Technologies Used  
 
 | Layer | Technology | Description |
 |-------|-------------|-------------|
@@ -55,9 +55,9 @@ The system follows the **Model–View–Controller (MVC)** architecture pattern,
 
 ---
 
-## 🌟 Features  
+## Features  
 
-### 👤 User Features  
+### User Features  
 - 🔐 **Registration** with email verification  
 - 🔑 **Login**, logout, and password recovery via email  
 - 🧳 **Search hotels** by country, city, and date range  
@@ -66,7 +66,7 @@ The system follows the **Model–View–Controller (MVC)** architecture pattern,
 - ❌ **Cancel reservations** easily  
 - 👤 **View personal profile** and booking history  
 
-### 🛎️ Admin Features  
+### Admin Features  
 - 🏗️ Add, edit, and delete hotels and rooms  
 - 🖼️ Upload and manage hotel or room images  
 - 📅 Manage room availability and categories  
@@ -75,7 +75,7 @@ The system follows the **Model–View–Controller (MVC)** architecture pattern,
 
 ---
 
-## 🧑‍💼 System Roles  
+## System Roles  
 
 | Role | Permissions |
 |------|--------------|
@@ -84,7 +84,7 @@ The system follows the **Model–View–Controller (MVC)** architecture pattern,
 
 ---
 
-## 🗄️ Database Structure  
+## Database Structure  
 
 **Entities Overview:**  
 - `User` – Registered users (guests and admins)  
@@ -103,7 +103,7 @@ The system follows the **Model–View–Controller (MVC)** architecture pattern,
 
 ---
 
-## 🔁 Booking Flow  
+## Booking Flow  
 
 1. User searches for available hotels and rooms by filters.  
 2. The system returns only available rooms for the selected dates.  
@@ -115,19 +115,19 @@ The system follows the **Model–View–Controller (MVC)** architecture pattern,
 
 ---
 
-## 🌐 Integration with External Systems  
+## Integration with External Systems  
 
-### 📧 Gmail API  
+### Gmail API  
 - Sends account verification emails upon registration.  
 - Handles password recovery via secure email link.  
 
-### 💳 PayPal Sandbox API  
+### PayPal Sandbox API  
 - Enables safe and fast online payments for bookings.  
 - Confirms payment success before saving the booking in the system.  
 
 ---
 
-## 🚀 Innovative Features  
+## Innovative Features  
 
 - ✅ **Email Verification System** – ensures account authenticity.  
 - 🔒 **Real-Time Room Locking** – prevents double-booking conflicts.  
